@@ -6,11 +6,13 @@
  * - Your Spotify API (analytics, history, affinity) - Tiers 1-4
  * - Spotify Web API (playlists, playback) - Tier 5 (optional)
  *
- * Transport: STDIO (for Claude Desktop integration)
+ * Transport: Streamable HTTP (/:8100/mcp)
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
+import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { encode as toonEncode } from '@toon-format/toon';
 
@@ -286,15 +288,23 @@ ${spotifyClient ? `Tier 5 (Spotify Web API - Control):
   // Connect to Transport
   // ============================================================
 
-  const transport = new StdioServerTransport();
+  const app = createMcpExpressApp();
+  const PORT = process.env.PORT || 8100;
 
-  server.server.onclose = () => {
-    console.error('[your-spotify-mcp] Server closed');
-    process.exit(0);
-  };
+  app.post('/mcp', async (req: Request, res: Response) => {
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+    await server.connect(transport);
+    await transport.handleRequest(req, res, req.body);
+  });
 
-  await server.connect(transport);
-  console.error(`[your-spotify-mcp] Server ready with ${spotifyClient ? 28 : 18} tools`);
+  app.get('/mcp', (_req: Request, res: Response) => res.status(405).end());
+  app.delete('/mcp', (_req: Request, res: Response) => res.status(405).end());
+
+  app.listen(PORT, () => {
+    console.error(`[your-spotify-mcp] Server ready on port ${PORT} with ${spotifyClient ? 28 : 18} tools`);
+  });
 }
 
 // Run the server
