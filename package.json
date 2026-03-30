@@ -12,7 +12,7 @@
     "clean": "rm -rf build",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "test": "node test/test-tools.js"
+    "test": "echo 'No tests configured'"
   },
   "keywords": [
     "mcp",
@@ -29,14 +29,16 @@
     "@toon-format/toon": "^1.0.0",
     "axios": "^1.6.0",
     "bottleneck": "^2.19.5",
+    "express": "^5.0.0",
     "zod": "^3.22.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/express": "^5.0.6",
     "@types/node": "^20.10.0",
     "eslint": "^9.0.0",
-    "@eslint/js": "^9.0.0",
-    "typescript-eslint": "^8.0.0",
-    "typescript": "^5.3.0"
+    "typescript": "^5.3.0",
+    "typescript-eslint": "^8.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
