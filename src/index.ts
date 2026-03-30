@@ -9,72 +9,131 @@
  * Transport: Streamable HTTP (/:8100/mcp)
  */
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
-import type { Request, Response } from 'express';
-import { z } from 'zod';
-import { encode as toonEncode } from '@toon-format/toon';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
+import type { Request, Response } from "express";
+import { z } from "zod";
+import { encode as toonEncode } from "@toon-format/toon";
 
-import { createYourSpotifyClient, YourSpotifyClient } from './lib/your-spotify-client.js';
-import { createSpotifyClient, SpotifyClient } from './lib/spotify-client.js';
-import { YourSpotifyService } from './services/your-spotify-service.js';
+import {
+  createYourSpotifyClient,
+  YourSpotifyClient,
+} from "./lib/your-spotify-client.js";
+import { createSpotifyClient, SpotifyClient } from "./lib/spotify-client.js";
+import { YourSpotifyService } from "./services/your-spotify-service.js";
 
 // Tier 1 Tools
 import {
-  getTrackStatsTool, getTrackStatsInputSchema, handleGetTrackStats,
-  getTopTracksTool, getTopTracksInputSchema, handleGetTopTracks,
-  getArtistStatsTool, getArtistStatsInputSchema, handleGetArtistStats,
-  getTopArtistsTool, getTopArtistsInputSchema, handleGetTopArtists,
-  searchListeningHistoryTool, searchListeningHistoryInputSchema, handleSearchListeningHistory,
-} from './tools/tier1/index.js';
+  getTrackStatsTool,
+  getTrackStatsInputSchema,
+  handleGetTrackStats,
+  getTopTracksTool,
+  getTopTracksInputSchema,
+  handleGetTopTracks,
+  getArtistStatsTool,
+  getArtistStatsInputSchema,
+  handleGetArtistStats,
+  getTopArtistsTool,
+  getTopArtistsInputSchema,
+  handleGetTopArtists,
+  searchListeningHistoryTool,
+  searchListeningHistoryInputSchema,
+  handleSearchListeningHistory,
+} from "./tools/tier1/index.js";
 
 // Tier 2 Tools
 import {
-  createCustomWrappedTool, createCustomWrappedInputSchema, handleCreateCustomWrapped,
-  analyzeAffinityTool, analyzeAffinityInputSchema, handleAnalyzeAffinity,
-  getListeningTimelineTool, getListeningTimelineInputSchema, handleGetListeningTimeline,
-  getArtistRankTool, getArtistRankInputSchema, handleGetArtistRank,
-  getTrackRankTool, getTrackRankInputSchema, handleGetTrackRank,
-} from './tools/tier2/index.js';
+  createCustomWrappedTool,
+  createCustomWrappedInputSchema,
+  handleCreateCustomWrapped,
+  analyzeAffinityTool,
+  analyzeAffinityInputSchema,
+  handleAnalyzeAffinity,
+  getListeningTimelineTool,
+  getListeningTimelineInputSchema,
+  handleGetListeningTimeline,
+  getArtistRankTool,
+  getArtistRankInputSchema,
+  handleGetArtistRank,
+  getTrackRankTool,
+  getTrackRankInputSchema,
+  handleGetTrackRank,
+} from "./tools/tier2/index.js";
 
 // Tier 3 Tools
 import {
-  analyzeListeningPatternsTool, analyzeListeningPatternsInputSchema, handleAnalyzeListeningPatterns,
-  getDiscoveryInsightsTool, getDiscoveryInsightsInputSchema, handleGetDiscoveryInsights,
-  compareListeningPeriodsTool, compareListeningPeriodsInputSchema, handleCompareListeningPeriods,
-  exportListeningDataTool, exportListeningDataInputSchema, handleExportListeningData,
-} from './tools/tier3/index.js';
+  analyzeListeningPatternsTool,
+  analyzeListeningPatternsInputSchema,
+  handleAnalyzeListeningPatterns,
+  getDiscoveryInsightsTool,
+  getDiscoveryInsightsInputSchema,
+  handleGetDiscoveryInsights,
+  compareListeningPeriodsTool,
+  compareListeningPeriodsInputSchema,
+  handleCompareListeningPeriods,
+  exportListeningDataTool,
+  exportListeningDataInputSchema,
+  handleExportListeningData,
+} from "./tools/tier3/index.js";
 
 // Tier 4 Tools
 import {
-  updateUserSettingsTool, updateUserSettingsInputSchema, handleUpdateUserSettings,
-  renameAccountTool, renameAccountInputSchema, handleRenameAccount,
-  generatePublicShareLinkTool, generatePublicShareLinkInputSchema, handleGeneratePublicShareLink,
-  revokePublicAccessTool, revokePublicAccessInputSchema, handleRevokePublicAccess,
-} from './tools/tier4/index.js';
+  updateUserSettingsTool,
+  updateUserSettingsInputSchema,
+  handleUpdateUserSettings,
+  renameAccountTool,
+  renameAccountInputSchema,
+  handleRenameAccount,
+  generatePublicShareLinkTool,
+  generatePublicShareLinkInputSchema,
+  handleGeneratePublicShareLink,
+  revokePublicAccessTool,
+  revokePublicAccessInputSchema,
+  handleRevokePublicAccess,
+} from "./tools/tier4/index.js";
 
 // Tier 5 Tools
 import {
-  createPlaylistTool, createPlaylistInputSchema, handleCreatePlaylist,
-  addTracksToPlaylistTool, addTracksToPlaylistInputSchema, handleAddTracksToPlaylist,
-  searchSpotifyCatalogTool, searchSpotifyCatalogInputSchema, handleSearchSpotifyCatalog,
-  getCurrentPlaybackTool, getCurrentPlaybackInputSchema, handleGetCurrentPlayback,
-  controlPlaybackTool, controlPlaybackInputSchema, handleControlPlayback,
-  playTracksTool, playTracksInputSchema, handlePlayTracks,
-  queueTracksTool, queueTracksInputSchema, handleQueueTracks,
-  getUserPlaylistsTool, getUserPlaylistsInputSchema, handleGetUserPlaylists,
-  updatePlaylistDetailsTool, updatePlaylistDetailsInputSchema, handleUpdatePlaylistDetails,
-  removeFromPlaylistTool, removeFromPlaylistInputSchema, handleRemoveFromPlaylist,
-} from './tools/tier5/index.js';
+  createPlaylistTool,
+  createPlaylistInputSchema,
+  handleCreatePlaylist,
+  addTracksToPlaylistTool,
+  addTracksToPlaylistInputSchema,
+  handleAddTracksToPlaylist,
+  searchSpotifyCatalogTool,
+  searchSpotifyCatalogInputSchema,
+  handleSearchSpotifyCatalog,
+  getCurrentPlaybackTool,
+  getCurrentPlaybackInputSchema,
+  handleGetCurrentPlayback,
+  controlPlaybackTool,
+  controlPlaybackInputSchema,
+  handleControlPlayback,
+  playTracksTool,
+  playTracksInputSchema,
+  handlePlayTracks,
+  queueTracksTool,
+  queueTracksInputSchema,
+  handleQueueTracks,
+  getUserPlaylistsTool,
+  getUserPlaylistsInputSchema,
+  handleGetUserPlaylists,
+  updatePlaylistDetailsTool,
+  updatePlaylistDetailsInputSchema,
+  handleUpdatePlaylistDetails,
+  removeFromPlaylistTool,
+  removeFromPlaylistInputSchema,
+  handleRemoveFromPlaylist,
+} from "./tools/tier5/index.js";
 
 // ============================================================
 // Server Configuration
 // ============================================================
 
 const SERVER_INFO = {
-  name: 'your-spotify-mcp',
-  version: '0.2.3',
+  name: "your-spotify-mcp",
+  version: "0.2.3",
 };
 
 const SERVER_CAPABILITIES = {
@@ -91,7 +150,7 @@ function registerYourSpotifyTool(
   tool: { name: string; description: string; inputSchema: unknown },
   schema: z.ZodSchema<any>,
   handler: (input: any, service: YourSpotifyService) => Promise<unknown>,
-  service: YourSpotifyService
+  service: YourSpotifyService,
 ) {
   server.registerTool(
     tool.name,
@@ -101,27 +160,28 @@ function registerYourSpotifyTool(
         const validatedInput = schema.parse(args);
         const result = await handler(validatedInput, service);
         // Use TOON format when requested, otherwise JSON
-        const outputFormat = validatedInput.output_format || 'toon';
-        const formatted = outputFormat === 'toon'
-          ? toonEncode(result)
-          : JSON.stringify(result, null, 2);
+        const outputFormat = validatedInput.output_format || "toon";
+        const formatted =
+          outputFormat === "toon"
+            ? toonEncode(result)
+            : JSON.stringify(result, null, 2);
         return {
-          content: [{ type: 'text' as const, text: formatted }],
+          content: [{ type: "text" as const, text: formatted }],
         };
       } catch (error) {
         // Handle both Error instances and YourSpotifyError objects
-        let message = 'Unknown error';
+        let message = "Unknown error";
         if (error instanceof Error) {
           message = error.message;
-        } else if (error && typeof error === 'object' && 'message' in error) {
+        } else if (error && typeof error === "object" && "message" in error) {
           message = String((error as { message: unknown }).message);
         }
         return {
-          content: [{ type: 'text' as const, text: `Error: ${message}` }],
+          content: [{ type: "text" as const, text: `Error: ${message}` }],
           isError: true,
         };
       }
-    }
+    },
   );
 }
 
@@ -131,7 +191,7 @@ function registerSpotifyTool(
   tool: { name: string; description: string; inputSchema: unknown },
   schema: z.ZodSchema<any>,
   handler: (input: any, client: SpotifyClient) => Promise<unknown>,
-  client: SpotifyClient
+  client: SpotifyClient,
 ) {
   server.registerTool(
     tool.name,
@@ -141,27 +201,28 @@ function registerSpotifyTool(
         const validatedInput = schema.parse(args);
         const result = await handler(validatedInput, client);
         // Use TOON format when requested, otherwise JSON
-        const outputFormat = validatedInput.output_format || 'toon';
-        const formatted = outputFormat === 'toon'
-          ? toonEncode(result)
-          : JSON.stringify(result, null, 2);
+        const outputFormat = validatedInput.output_format || "toon";
+        const formatted =
+          outputFormat === "toon"
+            ? toonEncode(result)
+            : JSON.stringify(result, null, 2);
         return {
-          content: [{ type: 'text' as const, text: formatted }],
+          content: [{ type: "text" as const, text: formatted }],
         };
       } catch (error) {
         // Handle both Error instances and YourSpotifyError objects
-        let message = 'Unknown error';
+        let message = "Unknown error";
         if (error instanceof Error) {
           message = error.message;
-        } else if (error && typeof error === 'object' && 'message' in error) {
+        } else if (error && typeof error === "object" && "message" in error) {
           message = String((error as { message: unknown }).message);
         }
         return {
-          content: [{ type: 'text' as const, text: `Error: ${message}` }],
+          content: [{ type: "text" as const, text: `Error: ${message}` }],
           isError: true,
         };
       }
-    }
+    },
   );
 }
 
@@ -170,7 +231,7 @@ function registerSpotifyTool(
 // ============================================================
 
 async function main(): Promise<void> {
-  console.error('[your-spotify-mcp] Starting server...');
+  console.error("[your-spotify-mcp] Starting server...");
 
   // Initialize clients
   let yourSpotifyClient: YourSpotifyClient;
@@ -178,120 +239,323 @@ async function main(): Promise<void> {
 
   try {
     yourSpotifyClient = createYourSpotifyClient();
-    console.error('[your-spotify-mcp] Your Spotify client initialized');
+    console.error("[your-spotify-mcp] Your Spotify client initialized");
   } catch (error) {
-    console.error('[your-spotify-mcp] Failed to initialize Your Spotify client:', error);
-    console.error('[your-spotify-mcp] Required environment variables:');
-    console.error('  YOUR_SPOTIFY_API_URL - URL to your Your Spotify API');
-    console.error('  YOUR_SPOTIFY_TOKEN - Your Your Spotify API token');
+    console.error(
+      "[your-spotify-mcp] Failed to initialize Your Spotify client:",
+      error,
+    );
+    console.error("[your-spotify-mcp] Required environment variables:");
+    console.error("  YOUR_SPOTIFY_API_URL - URL to your Your Spotify API");
+    console.error("  YOUR_SPOTIFY_TOKEN - Your Your Spotify API token");
     process.exit(1);
   }
 
   try {
     spotifyClient = createSpotifyClient();
     if (spotifyClient) {
-      console.error('[your-spotify-mcp] Spotify Web API client initialized (Tier 5 enabled)');
+      console.error(
+        "[your-spotify-mcp] Spotify Web API client initialized (Tier 5 enabled)",
+      );
     } else {
-      console.error('[your-spotify-mcp] Spotify Web API not configured (Tier 5 disabled)');
+      console.error(
+        "[your-spotify-mcp] Spotify Web API not configured (Tier 5 disabled)",
+      );
     }
   } catch (error) {
-    console.error('[your-spotify-mcp] Failed to initialize Spotify client:', error);
+    console.error(
+      "[your-spotify-mcp] Failed to initialize Spotify client:",
+      error,
+    );
   }
 
   const yourSpotifyService = new YourSpotifyService(yourSpotifyClient);
 
+  const enableManagement = process.env.ENABLE_MANAGEMENT_TOOLS === "true";
+
   // Create MCP server
   const server = new McpServer(SERVER_INFO, {
     capabilities: SERVER_CAPABILITIES,
-    instructions: `Your Spotify MCP Server v0.2.3 - Complete 28-tool suite
+    instructions: `Your Spotify MCP Server v0.3.1 - Analytics Suite
 
-Tiers 1-4 (Your Spotify API - Analytics & Management):
+Tiers 1-3 (Your Spotify API - Analytics):
 - Query unlimited listening history
 - Get detailed stats for any track or artist
 - Generate custom "Spotify Wrapped" for any date range
 - Analyze listening patterns and discover insights
-- Manage account settings and public sharing
 
-${spotifyClient ? `Tier 5 (Spotify Web API - Control):
+${enableManagement ? `Tier 4 (Management): Account settings and public sharing` : "Tier 4 (Management tools disabled)"}
+
+${spotifyClient
+        ? `Tier 5 (Spotify Web API - Control):
 - Create playlists from analytics results
 - Control playback (play, pause, skip, volume)
 - Search Spotify catalog
-- Manage queue and playlists` : 'Tier 5 (Spotify Web API) is not configured.'}`,
+- Manage queue and playlists`
+        : "Tier 5 (Spotify Web API) is not configured."
+      }`,
   });
 
   // ============================================================
   // Register Tier 1 Tools: Core Analytics
   // ============================================================
 
-  registerYourSpotifyTool(server, getTrackStatsTool, getTrackStatsInputSchema, handleGetTrackStats, yourSpotifyService);
-  registerYourSpotifyTool(server, getTopTracksTool, getTopTracksInputSchema, handleGetTopTracks, yourSpotifyService);
-  registerYourSpotifyTool(server, getArtistStatsTool, getArtistStatsInputSchema, handleGetArtistStats, yourSpotifyService);
-  registerYourSpotifyTool(server, getTopArtistsTool, getTopArtistsInputSchema, handleGetTopArtists, yourSpotifyService);
-  registerYourSpotifyTool(server, searchListeningHistoryTool, searchListeningHistoryInputSchema, handleSearchListeningHistory, yourSpotifyService);
+  registerYourSpotifyTool(
+    server,
+    getTrackStatsTool,
+    getTrackStatsInputSchema,
+    handleGetTrackStats,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getTopTracksTool,
+    getTopTracksInputSchema,
+    handleGetTopTracks,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getArtistStatsTool,
+    getArtistStatsInputSchema,
+    handleGetArtistStats,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getTopArtistsTool,
+    getTopArtistsInputSchema,
+    handleGetTopArtists,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    searchListeningHistoryTool,
+    searchListeningHistoryInputSchema,
+    handleSearchListeningHistory,
+    yourSpotifyService,
+  );
 
-  console.error('[your-spotify-mcp] Registered 5 Tier 1 tools (Core Analytics)');
+  console.error(
+    "[your-spotify-mcp] Registered 5 Tier 1 tools (Core Analytics)",
+  );
 
   // ============================================================
   // Register Tier 2 Tools: Enhanced Analytics
   // ============================================================
 
-  registerYourSpotifyTool(server, createCustomWrappedTool, createCustomWrappedInputSchema, handleCreateCustomWrapped, yourSpotifyService);
-  registerYourSpotifyTool(server, analyzeAffinityTool, analyzeAffinityInputSchema, handleAnalyzeAffinity, yourSpotifyService);
-  registerYourSpotifyTool(server, getListeningTimelineTool, getListeningTimelineInputSchema, handleGetListeningTimeline, yourSpotifyService);
-  registerYourSpotifyTool(server, getArtistRankTool, getArtistRankInputSchema, handleGetArtistRank, yourSpotifyService);
-  registerYourSpotifyTool(server, getTrackRankTool, getTrackRankInputSchema, handleGetTrackRank, yourSpotifyService);
+  registerYourSpotifyTool(
+    server,
+    createCustomWrappedTool,
+    createCustomWrappedInputSchema,
+    handleCreateCustomWrapped,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    analyzeAffinityTool,
+    analyzeAffinityInputSchema,
+    handleAnalyzeAffinity,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getListeningTimelineTool,
+    getListeningTimelineInputSchema,
+    handleGetListeningTimeline,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getArtistRankTool,
+    getArtistRankInputSchema,
+    handleGetArtistRank,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getTrackRankTool,
+    getTrackRankInputSchema,
+    handleGetTrackRank,
+    yourSpotifyService,
+  );
 
-  console.error('[your-spotify-mcp] Registered 5 Tier 2 tools (Enhanced Analytics)');
+  console.error(
+    "[your-spotify-mcp] Registered 5 Tier 2 tools (Enhanced Analytics)",
+  );
 
   // ============================================================
   // Register Tier 3 Tools: Power Analytics
   // ============================================================
 
-  registerYourSpotifyTool(server, analyzeListeningPatternsTool, analyzeListeningPatternsInputSchema, handleAnalyzeListeningPatterns, yourSpotifyService);
-  registerYourSpotifyTool(server, getDiscoveryInsightsTool, getDiscoveryInsightsInputSchema, handleGetDiscoveryInsights, yourSpotifyService);
-  registerYourSpotifyTool(server, compareListeningPeriodsTool, compareListeningPeriodsInputSchema, handleCompareListeningPeriods, yourSpotifyService);
-  registerYourSpotifyTool(server, exportListeningDataTool, exportListeningDataInputSchema, handleExportListeningData, yourSpotifyService);
+  registerYourSpotifyTool(
+    server,
+    analyzeListeningPatternsTool,
+    analyzeListeningPatternsInputSchema,
+    handleAnalyzeListeningPatterns,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    getDiscoveryInsightsTool,
+    getDiscoveryInsightsInputSchema,
+    handleGetDiscoveryInsights,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    compareListeningPeriodsTool,
+    compareListeningPeriodsInputSchema,
+    handleCompareListeningPeriods,
+    yourSpotifyService,
+  );
+  registerYourSpotifyTool(
+    server,
+    exportListeningDataTool,
+    exportListeningDataInputSchema,
+    handleExportListeningData,
+    yourSpotifyService,
+  );
 
-  console.error('[your-spotify-mcp] Registered 4 Tier 3 tools (Power Analytics)');
+  console.error(
+    "[your-spotify-mcp] Registered 4 Tier 3 tools (Power Analytics)",
+  );
 
   // ============================================================
-  // Register Tier 4 Tools: Your Spotify Management
+  // Register Tier 4 Tools: Your Spotify Management (optional)
   // ============================================================
 
-  registerYourSpotifyTool(server, updateUserSettingsTool, updateUserSettingsInputSchema, handleUpdateUserSettings, yourSpotifyService);
-  registerYourSpotifyTool(server, renameAccountTool, renameAccountInputSchema, handleRenameAccount, yourSpotifyService);
-  registerYourSpotifyTool(server, generatePublicShareLinkTool, generatePublicShareLinkInputSchema, handleGeneratePublicShareLink, yourSpotifyService);
-  registerYourSpotifyTool(server, revokePublicAccessTool, revokePublicAccessInputSchema, handleRevokePublicAccess, yourSpotifyService);
+  if (enableManagement) {
+    registerYourSpotifyTool(
+      server,
+      updateUserSettingsTool,
+      updateUserSettingsInputSchema,
+      handleUpdateUserSettings,
+      yourSpotifyService,
+    );
+    registerYourSpotifyTool(
+      server,
+      renameAccountTool,
+      renameAccountInputSchema,
+      handleRenameAccount,
+      yourSpotifyService,
+    );
+    registerYourSpotifyTool(
+      server,
+      generatePublicShareLinkTool,
+      generatePublicShareLinkInputSchema,
+      handleGeneratePublicShareLink,
+      yourSpotifyService,
+    );
+    registerYourSpotifyTool(
+      server,
+      revokePublicAccessTool,
+      revokePublicAccessInputSchema,
+      handleRevokePublicAccess,
+      yourSpotifyService,
+    );
 
-  console.error('[your-spotify-mcp] Registered 4 Tier 4 tools (Management)');
+    console.error("[your-spotify-mcp] Registered 4 Tier 4 tools (Management)");
+  }
 
   // ============================================================
   // Register Tier 5 Tools: Spotify Control (if configured)
   // ============================================================
 
   if (spotifyClient) {
-    registerSpotifyTool(server, createPlaylistTool, createPlaylistInputSchema, handleCreatePlaylist, spotifyClient);
-    registerSpotifyTool(server, addTracksToPlaylistTool, addTracksToPlaylistInputSchema, handleAddTracksToPlaylist, spotifyClient);
-    registerSpotifyTool(server, searchSpotifyCatalogTool, searchSpotifyCatalogInputSchema, handleSearchSpotifyCatalog, spotifyClient);
-    registerSpotifyTool(server, getCurrentPlaybackTool, getCurrentPlaybackInputSchema, handleGetCurrentPlayback, spotifyClient);
-    registerSpotifyTool(server, controlPlaybackTool, controlPlaybackInputSchema, handleControlPlayback, spotifyClient);
-    registerSpotifyTool(server, playTracksTool, playTracksInputSchema, handlePlayTracks, spotifyClient);
-    registerSpotifyTool(server, queueTracksTool, queueTracksInputSchema, handleQueueTracks, spotifyClient);
-    registerSpotifyTool(server, getUserPlaylistsTool, getUserPlaylistsInputSchema, handleGetUserPlaylists, spotifyClient);
-    registerSpotifyTool(server, updatePlaylistDetailsTool, updatePlaylistDetailsInputSchema, handleUpdatePlaylistDetails, spotifyClient);
-    registerSpotifyTool(server, removeFromPlaylistTool, removeFromPlaylistInputSchema, handleRemoveFromPlaylist, spotifyClient);
+    registerSpotifyTool(
+      server,
+      createPlaylistTool,
+      createPlaylistInputSchema,
+      handleCreatePlaylist,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      addTracksToPlaylistTool,
+      addTracksToPlaylistInputSchema,
+      handleAddTracksToPlaylist,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      searchSpotifyCatalogTool,
+      searchSpotifyCatalogInputSchema,
+      handleSearchSpotifyCatalog,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      getCurrentPlaybackTool,
+      getCurrentPlaybackInputSchema,
+      handleGetCurrentPlayback,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      controlPlaybackTool,
+      controlPlaybackInputSchema,
+      handleControlPlayback,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      playTracksTool,
+      playTracksInputSchema,
+      handlePlayTracks,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      queueTracksTool,
+      queueTracksInputSchema,
+      handleQueueTracks,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      getUserPlaylistsTool,
+      getUserPlaylistsInputSchema,
+      handleGetUserPlaylists,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      updatePlaylistDetailsTool,
+      updatePlaylistDetailsInputSchema,
+      handleUpdatePlaylistDetails,
+      spotifyClient,
+    );
+    registerSpotifyTool(
+      server,
+      removeFromPlaylistTool,
+      removeFromPlaylistInputSchema,
+      handleRemoveFromPlaylist,
+      spotifyClient,
+    );
 
-    console.error('[your-spotify-mcp] Registered 10 Tier 5 tools (Spotify Control)');
+    console.error(
+      "[your-spotify-mcp] Registered 10 Tier 5 tools (Spotify Control)",
+    );
   }
 
   // ============================================================
   // Connect to Transport
   // ============================================================
 
-  const app = createMcpExpressApp();
+  const MCP_HOST = process.env.MCP_HOST || "0.0.0.0";
+  const MCP_ALLOWED_HOSTS = process.env.MCP_ALLOWED_HOSTS?.split(",") || [
+    "mcp-your-spotify",
+    "localhost",
+    "127.0.0.1",
+  ];
+  const app = createMcpExpressApp({
+    host: MCP_HOST,
+    allowedHosts: MCP_ALLOWED_HOSTS,
+  });
   const PORT = process.env.PORT || 8100;
 
-  app.post('/mcp', async (req: Request, res: Response) => {
+  app.post("/mcp", async (req: Request, res: Response) => {
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });
@@ -299,16 +563,18 @@ ${spotifyClient ? `Tier 5 (Spotify Web API - Control):
     await transport.handleRequest(req, res, req.body);
   });
 
-  app.get('/mcp', (_req: Request, res: Response) => res.status(405).end());
-  app.delete('/mcp', (_req: Request, res: Response) => res.status(405).end());
+  app.get("/mcp", (_req: Request, res: Response) => res.status(405).end());
+  app.delete("/mcp", (_req: Request, res: Response) => res.status(405).end());
 
   app.listen(PORT, () => {
-    console.error(`[your-spotify-mcp] Server ready on port ${PORT} with ${spotifyClient ? 28 : 18} tools`);
+    console.error(
+      `[your-spotify-mcp] Server ready on port ${PORT} with ${spotifyClient ? 28 : 18} tools`,
+    );
   });
 }
 
 // Run the server
 main().catch((error) => {
-  console.error('[your-spotify-mcp] Fatal error:', error);
+  console.error("[your-spotify-mcp] Fatal error:", error);
   process.exit(1);
 });
