@@ -38,15 +38,15 @@ The Your Spotify MCP server connects to your Your Spotify instance (self-hosted 
 
 ### Available Tool Tiers
 
-| Tier | Category | Status |
-|------|----------|--------|
-| 1 | Core Analytics | ✅ Fully Available |
-| 2 | Enhanced Analytics | ✅ Mostly Available* |
-| 3 | Power Analytics | ✅ Fully Available |
-| 4 | Management | ⚠️ Read-only (some features need web auth) |
-| 5 | Spotify Control | ❌ Not configured |
+| Tier | Category           | Status                                     |
+| ---- | ------------------ | ------------------------------------------ |
+| 1    | Core Analytics     | ✅ Fully Available                         |
+| 2    | Enhanced Analytics | ✅ Mostly Available\*                      |
+| 3    | Power Analytics    | ✅ Fully Available                         |
+| 4    | Management         | ⚠️ Read-only (some features need web auth) |
+| 5    | Spotify Control    | ❌ Not configured                          |
 
-*analyze_affinity has authentication issues
+\*analyze_affinity has authentication issues
 
 ---
 
@@ -55,11 +55,13 @@ The Your Spotify MCP server connects to your Your Spotify instance (self-hosted 
 ### Get Your Top Tracks
 
 **All-time top 10:**
+
 ```
 "What are my most played songs ever?"
 ```
 
 **Top tracks from a specific period:**
+
 ```
 "Show me my top 20 tracks from 2024"
 "What were my most played songs last month?"
@@ -67,6 +69,7 @@ The Your Spotify MCP server connects to your Your Spotify instance (self-hosted 
 ```
 
 **With date ranges:**
+
 ```
 "My top tracks between January and March 2024"
 "Most played songs from December 2025"
@@ -75,12 +78,14 @@ The Your Spotify MCP server connects to your Your Spotify instance (self-hosted 
 ### Get Your Top Artists
 
 **All-time favorites:**
+
 ```
 "Who are my top 10 artists?"
 "My most listened to artists ever"
 ```
 
 **Time-specific:**
+
 ```
 "Top 5 artists this year"
 "Who did I listen to most in 2024?"
@@ -90,6 +95,7 @@ The Your Spotify MCP server connects to your Your Spotify instance (self-hosted 
 ### Search Your History
 
 **Find specific artists:**
+
 ```
 "Have I listened to Pink Floyd?"
 "Search my history for Radiohead"
@@ -97,12 +103,14 @@ The Your Spotify MCP server connects to your Your Spotify instance (self-hosted 
 ```
 
 **Find songs by name:**
+
 ```
 "Find songs with 'love' in the title"
 "Search for tracks called 'Ride'"
 ```
 
 **Find albums:**
+
 ```
 "Have I listened to the album 'Clancy'?"
 "Search my history for 'The Search' album"
@@ -123,6 +131,7 @@ Get detailed stats for a specific track:
 ```
 
 **Returns:**
+
 - Total play count
 - Total listening time
 - First and last play dates
@@ -140,6 +149,7 @@ Get comprehensive artist data:
 ```
 
 **Returns:**
+
 - Total plays across all tracks
 - Total listening time in hours
 - First discovery date
@@ -155,12 +165,14 @@ Get comprehensive artist data:
 Create your own "Spotify Wrapped" for any period:
 
 **Full year:**
+
 ```
 "Create my Wrapped for 2024"
 "Generate a year-end summary for 2023"
 ```
 
 **Seasons:**
+
 ```
 "Make a Wrapped for summer 2024"
 "My spring listening summary"
@@ -168,18 +180,21 @@ Create your own "Spotify Wrapped" for any period:
 ```
 
 **Single month:**
+
 ```
 "Create a Wrapped for December 2025"
 "My November stats"
 ```
 
 **Custom ranges:**
+
 ```
 "Wrapped for January through March 2024"
 "My listening summary from June 1 to August 31"
 ```
 
 **Wrapped includes:**
+
 - Total listening hours
 - Total tracks played
 - Top 5 tracks with play counts
@@ -193,18 +208,21 @@ Create your own "Spotify Wrapped" for any period:
 See how your listening varies over time:
 
 **Daily breakdown:**
+
 ```
 "Show my listening timeline for January 2024"
 "Daily play counts for last week"
 ```
 
 **Weekly overview:**
+
 ```
 "How has my listening changed week by week this year?"
 "Weekly timeline for 2024"
 ```
 
 **Monthly trends:**
+
 ```
 "Show my monthly listening for the past 2 years"
 "Monthly play counts since 2020"
@@ -217,6 +235,7 @@ See how your listening varies over time:
 ### When Do You Listen?
 
 **By hour of day:**
+
 ```
 "What time of day do I listen to music most?"
 "Am I a morning or evening listener?"
@@ -224,6 +243,7 @@ See how your listening varies over time:
 ```
 
 **By day of week:**
+
 ```
 "Which day of the week do I listen most?"
 "Am I a weekend or weekday listener?"
@@ -231,12 +251,14 @@ See how your listening varies over time:
 ```
 
 **Combined analysis:**
+
 ```
 "When do I listen the most - hour and day?"
 "My complete listening schedule patterns"
 ```
 
 **Example insights:**
+
 - "Your peak listening is at 7:00 AM (8,298 plays, 6% of total)"
 - "Friday is your most active day (21,461 plays, 16%)"
 - "Lowest listening at 1:00 PM"
@@ -246,30 +268,35 @@ See how your listening varies over time:
 Compare two time periods:
 
 **Quarter vs quarter:**
+
 ```
 "Compare my listening in Q1 vs Q2 2024"
 "How did first quarter compare to second quarter?"
 ```
 
 **Year over year:**
+
 ```
 "Compare 2024 to 2023"
 "How has my listening changed from last year?"
 ```
 
 **Season comparisons:**
+
 ```
 "Summer vs winter listening comparison"
 "Compare my spring to fall listening"
 ```
 
 **Half-year:**
+
 ```
 "First half of 2024 vs second half"
 "Compare H1 to H2"
 ```
 
 **Returns:**
+
 - Play count difference (absolute and percentage)
 - Hours difference
 - Top artist for each period
@@ -291,6 +318,7 @@ Find out what new music you discovered:
 ```
 
 **Returns:**
+
 - New artists with first-listen dates
 - New tracks discovered
 - Summary counts
@@ -320,6 +348,7 @@ See where an artist ranks in your library:
 ```
 
 **Returns:**
+
 - Rank position (e.g., #1 out of 500 artists)
 - Percentile (e.g., top 1%)
 - Total play count
@@ -341,18 +370,21 @@ Check a track's position:
 ### Export Formats
 
 **JSON (full data):**
+
 ```
 "Export my 2024 listening data as JSON"
 "Give me a JSON export of my stats"
 ```
 
 **CSV (spreadsheet-friendly):**
+
 ```
 "Export my top tracks as CSV"
 "CSV export of 2024 listening"
 ```
 
 **Summary (quick overview):**
+
 ```
 "Give me a summary export"
 "Export summary of my listening"
@@ -391,6 +423,7 @@ Create a shareable link to your stats:
 ```
 
 **With description:**
+
 ```
 "Create a share link called 'My 2024 Music Journey'"
 "Generate a public link with description 'Summer Vibes'"
@@ -451,41 +484,49 @@ Create a shareable link to your stats:
 The server understands natural language. Here are example queries organized by intent:
 
 ### Quick Stats
+
 - "What are my top 10 songs?"
 - "Who's my favorite artist?"
 - "How much music have I listened to?"
 
 ### Time Questions
+
 - "What was I listening to last summer?"
 - "My December stats"
 - "How was my 2024?"
 
 ### Comparisons
+
 - "Am I listening more this year?"
 - "Compare my spring to fall listening"
 - "Which month did I listen most?"
 
 ### Discovery
+
 - "What new music did I find?"
 - "Did I discover any new artists recently?"
 - "Show me my recent discoveries"
 
 ### Patterns
+
 - "When do I listen the most?"
 - "Am I a morning listener?"
 - "What day do I play the most music?"
 
 ### Search
+
 - "Have I heard this artist before?"
 - "Find songs with 'night' in the title"
 - "Search for electronic music"
 
 ### Rankings
+
 - "Where does [artist] rank?"
 - "Is [song] in my top 100?"
 - "What percentile is [artist]?"
 
 ### Export/Share
+
 - "Export my data"
 - "Create a shareable link"
 - "Give me a CSV of my top tracks"
@@ -502,6 +543,7 @@ Use: "My listening from December 2025" or "Last 30 days"
 ### 2. Combine Queries for Deeper Insights
 
 Start broad, then drill down:
+
 1. "Top artists of 2024" → Identifies favorite
 2. "Stats for [artist]" → Deep dive
 3. "Rank of [artist]" → Context
@@ -509,6 +551,7 @@ Start broad, then drill down:
 ### 3. Use Wrapped for Summaries
 
 For any period overview, start with Wrapped:
+
 - Creates comprehensive summary
 - Includes top tracks, artists, albums
 - Shows patterns and discoveries
@@ -516,6 +559,7 @@ For any period overview, start with Wrapped:
 ### 4. Export Before Comparisons
 
 When doing year-over-year analysis:
+
 1. Export each year's data
 2. Compare periods
 3. Analyze patterns for each
@@ -523,6 +567,7 @@ When doing year-over-year analysis:
 ### 5. Check Rankings for Context
 
 Play counts alone don't tell the whole story:
+
 - "I played X 50 times" → Is that a lot?
 - "X is #5 out of 10,000 tracks (top 0.05%)" → Now you know!
 
@@ -548,21 +593,21 @@ Play counts alone don't tell the whole story:
 
 ## Quick Reference
 
-| Task | Example Query |
-|------|---------------|
-| Top tracks | "My top 10 songs" |
-| Top artists | "Who are my favorite artists?" |
+| Task         | Example Query                     |
+| ------------ | --------------------------------- |
+| Top tracks   | "My top 10 songs"                 |
+| Top artists  | "Who are my favorite artists?"    |
 | Artist stats | "How much NF have I listened to?" |
-| Track stats | "How many times did I play Ride?" |
-| Search | "Find songs with love" |
-| Wrapped | "Create my 2024 Wrapped" |
-| Timeline | "Monthly listening for 2024" |
-| Patterns | "When do I listen most?" |
-| Compare | "Q1 vs Q2 2024" |
-| Rank | "Where does X rank?" |
-| Export | "Export as CSV" |
-| Share | "Create a public link" |
+| Track stats  | "How many times did I play Ride?" |
+| Search       | "Find songs with love"            |
+| Wrapped      | "Create my 2024 Wrapped"          |
+| Timeline     | "Monthly listening for 2024"      |
+| Patterns     | "When do I listen most?"          |
+| Compare      | "Q1 vs Q2 2024"                   |
+| Rank         | "Where does X rank?"              |
+| Export       | "Export as CSV"                   |
+| Share        | "Create a public link"            |
 
 ---
 
-*Guide created for Your Spotify MCP Server v0.2.3*
+_Guide created for Your Spotify MCP Server v0.3.1_
